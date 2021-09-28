@@ -82,10 +82,13 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
     ```
     ${list service types here}
     ```
-12. Use the ROS command `${command and args}` to list the immediate (direct) dependencies of `crazy_turtle`
+12. Use the ROS command 'rospack depends1 crazy_turtle' to list the immediate (direct) dependencies of `crazy_turtle`
    The output of the command looks like
    ```
-   ${list direct dependencies here}
+   rospy
+   message_runtime
+   turtlesim
+
    ```
 ## Live Interaction
 13. Use the ROS command `${command and args}` to call the `/switch` service.
