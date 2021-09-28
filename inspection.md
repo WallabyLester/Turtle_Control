@@ -6,11 +6,11 @@ exercise. Replace the the blanks marked with `${ITEM}` with your answer.
 Unless otherwise specified, list the command and all arguments that you passed to it.
 
 ## Setup Instructions
-1. Compile the workspace by executing 'catkin_make'
-2. Initialize the ROS environment (i.e., set the necessary ROS environment variables) by executing 'source devel/setup.bash'
+1. Compile the workspace by executing `catkin_make`
+2. Initialize the ROS environment (i.e., set the necessary ROS environment variables) by executing `source devel/setup.bash`
 3. Make sure no other ROS nodes are running prior to starting. 
-3. Run the launchfile '/home/androo/Documents/ME495_Embedded_Robotics/Homework1/src/crazy_turtle/launch' by executing 'roslaunch crazy_turtle go_crazy_turtle.launch'
-4. When running you can see a visual depiction of the ROS graph using the 'rqt_graph' command.
+3. Run the launchfile `/home/androo/Documents/ME495_Embedded_Robotics/Homework1/src/crazy_turtle/launch` by executing `roslaunch crazy_turtle go_crazy_turtle.launch`
+4. When running you can see a visual depiction of the ROS graph using the `rqt_graph` command.
    The ROS graph, including all topics and node labels, looks like:
    ![The ROS Graph](rosgraph_crazy_turtle.png "rosgraph_crazy_turtle.png")
 
@@ -18,7 +18,7 @@ Unless otherwise specified, list the command and all arguments that you passed t
 The `launchfile` from above should be running at all times when executing these commands.
 If the nodes launched from the `launchfile` are not running, you will get incorrect results.
 
-5. Use the ROS command 'rosnode list' to list all the nodes that are running.
+5. Use the ROS command `rosnode list` to list all the nodes that are running.
    The output of the command looks like
    ```
    /mover
@@ -26,7 +26,7 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
    /roving_turtle
 
    ```
-6. Use the ROS command 'rostopic list' to list the topics
+6. Use the ROS command `rostopic list` to list the topics
    The output of the command looks like
    ```
    /rosout
@@ -37,9 +37,9 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
 
    ```
 
-7. Use the ROS command 'rostopic hz /turtle1/cmd_vel' to verify that the frequency of the `/turtle1/cmd_vel` topic is '120 Hz'
+7. Use the ROS command `rostopic hz /turtle1/cmd_vel` to verify that the frequency of the `/turtle1/cmd_vel` topic is `120 Hz`
 
-8. Use the ROS command 'rosservice list' to list the services.
+8. Use the ROS command `rosservice list` to list the services.
    The output of the command looks like
    ```
    /clear
@@ -58,11 +58,10 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
    /turtle1/teleport_relative
 
    ```
-9. Use the ROS command 'rosservice info /switch' to view information about the `/switch` service.
-   The type of the `/switch` service is 'crazy_turtle/Switch' and it is offered by the '/mover' node.
+9. Use the ROS command `rosservice info /switch` to view information about the `/switch` service.
+   The type of the `/switch` service is `crazy_turtle/Switch` and it is offered by the `/mover` node.
 
-10. Use the ROS command 'rosparam list' to list the parameters that are loaded
-    into the parameter server.
+10. Use the ROS command `rosparam list` to list the parameters that are loaded into the parameter server.
     The output of the command looks like
     ```
     /mover/velocity
@@ -77,12 +76,12 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
     ```
 
 ## Package and Dependencies
-11. Use the ROS command `${command and args}` to list the types of services defined by `crazy_turtle`
+11. Use the ROS command `rossrv package crazy_turtle` to list the types of services defined by `crazy_turtle`
     The output of the command looks like
     ```
-    ${list service types here}
+    crazy_turtle/Switch
     ```
-12. Use the ROS command 'rospack depends1 crazy_turtle' to list the immediate (direct) dependencies of `crazy_turtle`
+12. Use the ROS command `rospack depends1 crazy_turtle` to list the immediate (direct) dependencies of `crazy_turtle`
    The output of the command looks like
    ```
    rospy
