@@ -90,13 +90,12 @@ If the nodes launched from the `launchfile` are not running, you will get incorr
 
    ```
 ## Live Interaction
-13. Use the ROS command `${command and args}` to call the `/switch` service.
-    The command returns `${return value}` and the turtle `${brief description of what the turtle does}`.
+13. Use the ROS command `rosservice call /switch "mixer: {x: 2.0, y: 2.0, theta: 0, linear_velocity: 3.0, angular_velocity: 3.0}"` to call the `/switch` service.
+    The command returns `x: 6.0, y: 6.0` and the turtle `initalizes as a new turtle, beginning in the center for x and y of 2 and faces a direction depending on the angular inputs`.
     (Hint: use `rossrv info` on the type of the `/switch` service to see the parameters.
      To test the behavior, look at the code or try calling with `x = 1`, `y = 1`, once with `linear_velocity = 0` and `angular_velocity = 0` and once with these at different nonzero values.)
-14. What is the value of the `/mover/velocity` parameter? `${value here}`
-15. What happens to the turtle's motion if you change `/mover/velocity` to 10 while the turtlesim and mover node are running? ${faster | slower | same}
-16. Use the ROS command `${command and args}` to kill the `/mover` node.
-17. Use the ROS command `${command and args}` to start the `/mover` node. Be sure to
-    remap `cmd_vel` to `/turtle1/cmd_vel`.
-18. What happened to the turtle's velocity after relaunching `mover`? `${faster | slower | same}`
+14. What is the value of the `/mover/velocity` parameter? `4.5`
+15. What happens to the turtle's motion if you change `/mover/velocity` to 10 while the turtlesim and mover node are running? `same`
+16. Use the ROS command `rosnode kill` to kill the `/mover` node.
+17. Use the ROS command `rosrun crazy_turtle mover /cmd_vel:=/turtle1/cmd_vel` to start the `/mover` node. Be sure to remap `cmd_vel` to `/turtle1/cmd_vel`.
+18. What happened to the turtle's velocity after relaunching `mover`? `faster`
