@@ -1,0 +1,4 @@
+<launch>
+    <node name="setup" pkg="turtle_control" type="setup"/>
+
+</launch>
