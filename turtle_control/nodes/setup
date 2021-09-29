@@ -1,19 +1,39 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs import Twist, Vector3
-from turtlesim.srv import TeleportAbsolute
+#from geometry_msgs import Twist, Vector3
+from turtlesim.srv import TeleportAbsolute, SetPen
 from std_srvs.srv import Empty, EmptyResponse
+import numpy as np
 
-# service draw
+waypoints = [4,4]
+line_value = 1
 
+class Draw:
+    # service to reset turtlesim and draw waypoints
+    def __init__(self):
+        self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
+        self.__teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
+        self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
+        self.__service = rospy.Service("draw", Empty, self.actions)
+
+    def actions(self, x, y):
+        self.__reset_turtle()
+        for i in waypoints:
+            x.x = waypoints.pop[0]
+            y.y = waypoints.pop[1]
+            self.__set_pen(off=1)
+            self.__teleport(waypoints[0]-line_value,waypoints[1]-line_value,0)
+            self.__set_pen(off=0)
+            self.__teleport(waypoints[0]+line_value,waypoints[1]+line_value,0)
+            self.__set_pen(off=1)
+            self.__teleport(waypoints[0]-line_value,waypoints[1]+line_value,0)
+            self.__set_pen(off=0)
+            self.__teleport(waypoints[0]+line_value,waypoints[1]-line_value,0)
+            #self.__vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
+        return EmptyResponse()
 
 if __name__ == '__main__':
-    reset_turtle = rospy.ServiceProxy("reset", Empty)
-    teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
-    vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
     rospy.init_node("setup")
-
-    while not rospy.is_shutdown():
-        reset_turtle()
-        teleport(0, 1, 0)
+    node = Draw()
+    rospy.spin()
