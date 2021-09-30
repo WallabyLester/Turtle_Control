@@ -1,0 +1,17 @@
+# node that converts between geometry_msgs/Twist and turtle_control/Turtle Velocity
+#!/usr/bin/env python
+
+import rospy
+from geometry_msgs.msg import Twist, Vector3
+from turtle_control.msg import TurtleVelocity
+    
+
+def turtle_handler(info):
+    rospy.logdebug(info)
+    pub = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=10)
+    pub.publish(Twist(Vector3(x = info.linear,y=0,z=0), Vector3(x=0,y=0,z = info.angular)))
+
+if __name__=='__main__':
+    rospy.Subscriber("turtle_cmd", TurtleVelocity, turtle_handler)
+    rospy.init_node("translate", log_level=rospy.DEBUG)
+    rospy.spin()

@@ -6,7 +6,7 @@ from turtlesim.srv import TeleportAbsolute, SetPen
 from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
 
-waypoints = [[4,4],[2,2],[5,7],[7,2],[7,6]]
+waypoints = rospy.get_param("/waypoints")
 line_value = 0.2
 
 class Draw:
