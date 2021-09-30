@@ -6,8 +6,8 @@ from turtlesim.srv import TeleportAbsolute, SetPen
 from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
 
-waypoints = [4,4]
-line_value = 1
+waypoints = [[4,4],[2,2],[5,7],[7,2],[7,6]]
+line_value = 0.2
 
 class Draw:
     # service to reset turtlesim and draw waypoints
@@ -17,19 +17,19 @@ class Draw:
         self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
         self.__service = rospy.Service("draw", Empty, self.actions)
 
-    def actions(self, x, y):
+    def actions(self,req):
         self.__reset_turtle()
         for i in waypoints:
-            x.x = waypoints.pop[0]
-            y.y = waypoints.pop[1]
             self.__set_pen(off=1)
-            self.__teleport(waypoints[0]-line_value,waypoints[1]-line_value,0)
+            self.__teleport(i[0]-line_value,i[1]-line_value,0)
             self.__set_pen(off=0)
-            self.__teleport(waypoints[0]+line_value,waypoints[1]+line_value,0)
+            self.__teleport(i[0]+line_value,i[1]+line_value,0)
             self.__set_pen(off=1)
-            self.__teleport(waypoints[0]-line_value,waypoints[1]+line_value,0)
+            self.__teleport(i[0]-line_value,i[1]+line_value,0)
             self.__set_pen(off=0)
-            self.__teleport(waypoints[0]+line_value,waypoints[1]-line_value,0)
+            self.__teleport(i[0]+line_value,i[1]-line_value,0)
+            self.__set_pen(off=1)
+            self.__teleport(0,0,0)
             #self.__vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
         return EmptyResponse()
 
