@@ -48,7 +48,7 @@ class Follow:
             self.__set_pen(off=1)
             self.__teleport(x_position, y_position, 0)
             a = (self.turtle_position.x, self.turtle_position.y)
-            b = (waypoints[0], waypoints[1])
+            b = waypoints[0]
             distance = math.dist(a, b)
             return distance
 
