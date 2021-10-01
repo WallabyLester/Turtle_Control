@@ -25,7 +25,7 @@ class Follow:
 
 
 
-        self.__service = rospy.Service("restart", Start,self.check_bounds)
+        self.__service = rospy.Service("restart", Start,self.distance)
         self.turtle_position = None
 
         rospy.Subscriber("turtle1/pose", Pose, self.callback)
@@ -37,29 +37,22 @@ class Follow:
         #rospy.loginfo(f"x: {data.x}, y: {data.y}")
         self.turtle_position = data
 
-    def check_bounds(self, bounds):
-        # function to check if turtle is within the bounds 
-        x = bounds.x
-        y = bounds.y
-        if x > 10 or x < 0:
-            return None
-        if y > 10 or y < 0:
+    def distance(self, bounds):
+        # function to check if turtle is within the bounds and computer distance
+        x_position = bounds.x
+        y_position = bounds.y
+        if x_position > 10 or x_position < 0 or y_position > 10 or y_position < 0:
             return None
         else:
-            self.__reset_turtle()
+            self.__draw()
             self.__set_pen(off=1)
-            self.__teleport(x, y, 0)
-            return EmptyResponse
+            self.__teleport(x_position, y_position, 0)
+            a = (self.turtle_position.x, self.turtle_position.y)
+            b = (waypoints[0], waypoints[1])
+            distance = math.dist(a, b)
+            return distance
 
-    def distance(self, a, b):
-        self.__draw()
-        a = (self.turtle_position.x, self.turtle_position.y)
-        b = [waypoints[0], waypoints[1]]
-        distance = math.dist(self.a,self.b)
-        print(distance)
-        return distance 
-    
-    
+      
 
 
 
@@ -69,42 +62,3 @@ if __name__ == "__main__":
         rospy.spin()
 
 
-
-
-"""
-line_value = 0.2
-
-class Draw:
-    # service to reset turtlesim and draw waypoints
-    def __init__(self):from turtlesim.srv import TeleportAbsolute, SetPen
-
-        self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
-        self.__teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
-        self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
-        self.__service = rospy.Service("draw", Empty, self.actions)
-
-    def actions(self,req):
-        self.__reset_turtle()
-        for i in waypoints:
-            self.__set_pen(off=1)
-            self.__teleport(i[0]-line_value,i[1]-line_value,0)
-            self.__set_pen(off=0)
-            self.__teleport(i[0]+line_value,i[1]+line_value,0)
-            self.__set_pen(off=1)
-            self.__teleport(i[0]-line_value,i[1]+line_value,0)
-            self.__set_pen(off=0)
-            self.__teleport(i[0]+line_value,i[1]-line_value,0)
-            self.__set_pen(off=1)
-            self.__teleport(0,0,0)
-            #self.__vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
-        return EmptyResponse()
-
-
-
-
-
-if __name__ == '__main__':
-    rospy.init_node("setup")
-    node = Draw()
-    rospy.spin()
-"""
