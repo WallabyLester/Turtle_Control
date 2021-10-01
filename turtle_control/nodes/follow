@@ -4,11 +4,14 @@ import rospy
 from turtlesim.msg import Pose
 from std_srvs.srv import Empty, EmptyResponse
 from turtlesim.srv import TeleportAbsolute, SetPen, Spawn
+from turtle_control.msg import TurtleVelocity
+
 
 import math
 from turtle_control.srv import Start
 
 waypoints = rospy.get_param("/waypoints")
+#waypoints = [[3,4], [5,3]]
 #rospy.set_param(_dist_thresh)
 _dist_thresh = 1
 
@@ -23,15 +26,12 @@ class Follow:
         self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
         self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
 
-
-
         self.__service = rospy.Service("restart", Start,self.distance)
         self.turtle_position = None
 
         rospy.Subscriber("turtle1/pose", Pose, self.callback)
-        #rospy.Publisher()
+        rospy.Publisher("turtle_cmd", TurtleVelocity, queue_size=10)
 
-        
 
     def callback(self, data):
         #rospy.loginfo(f"x: {data.x}, y: {data.y}")
@@ -43,14 +43,19 @@ class Follow:
         y_position = bounds.y
         if x_position > 10 or x_position < 0 or y_position > 10 or y_position < 0:
             return None
-        else:
-            self.__draw()
-            self.__set_pen(off=1)
-            self.__teleport(x_position, y_position, 0)
-            a = (self.turtle_position.x, self.turtle_position.y)
-            b = waypoints[0]
+        self.__draw()
+        self.__set_pen(off=1)
+        self.__teleport(x_position, y_position, 0)
+        distances = []
+        a = (self.turtle_position.x, self.turtle_position.y)
+        for i in waypoints:
+            b = i
             distance = math.dist(a, b)
-            return distance
+            distances.append(distance)
+            a = i
+            #print(distances)
+        total_distance = sum(distances)
+        return total_distance
 
       
 
