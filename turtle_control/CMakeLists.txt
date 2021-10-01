@@ -53,11 +53,11 @@ add_message_files(
  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
+ add_service_files(
+   FILES
+   Start.srv
 #   Service2.srv
-# )
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -161,6 +161,7 @@ include_directories(
 catkin_install_python(PROGRAMS
    nodes/setup
    nodes/translate
+   nodes/follow
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
