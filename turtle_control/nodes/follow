@@ -4,18 +4,11 @@ import rospy
 from turtlesim.msg import Pose
 from std_srvs.srv import Empty, EmptyResponse
 from turtlesim.srv import TeleportAbsolute, SetPen, Spawn
-from turtle_control.msg import TurtleVelocity
-
-
 import math
+from turtle_control.msg import TurtleVelocity
 from turtle_control.srv import Start
 
 waypoints = rospy.get_param("/waypoints")
-#waypoints = [[3,4], [5,3]]
-#rospy.set_param(_dist_thresh)
-_dist_thresh = 1
-
-      
 
 class Follow:
     # service to call the draw service from setup node and moves the turtle by waypoints
@@ -29,18 +22,24 @@ class Follow:
         self.__service = rospy.Service("restart", Start,self.distance)
         self.turtle_position = None
 
+        self.dist_thresh = 0.4
+        rospy.set_param("~dist_thresh", self.dist_thresh)
+
         rospy.Subscriber("turtle1/pose", Pose, self.callback)
-        rospy.Publisher("turtle_cmd", TurtleVelocity, queue_size=10)
+        self.pub = rospy.Publisher("turtle_cmd", TurtleVelocity, queue_size=10)
+
+        self.iteration_number = 0
 
 
     def callback(self, data):
         #rospy.loginfo(f"x: {data.x}, y: {data.y}")
         self.turtle_position = data
 
-    def distance(self, bounds):
-        # function to check if turtle is within the bounds and computer distance
-        x_position = bounds.x
-        y_position = bounds.y
+
+    def distance(self, position):
+        # function to check if turtle is within the bounds and compute distance
+        x_position = position.x
+        y_position = position.y
         if x_position > 10 or x_position < 0 or y_position > 10 or y_position < 0:
             return None
         self.__draw()
@@ -54,16 +53,43 @@ class Follow:
             distances.append(distance)
             a = i
             #print(distances)
-        total_distance = sum(distances)
-        return total_distance
+        self.total_distance = sum(distances) 
+        self.final_move()
+        
+    def iterations(self):
+        if self.iteration_number == len(waypoints)-1:
+            self.iteration_number = 0
+        else:
+            self.iteration_number += 1
+        self.final_move()
 
-      
-
-
+    def please_move(self):
+        # function to make the turtle move
+        distance_points = waypoints[self.iteration_number]
+        dx = distance_points[0] - self.turtle_position.x
+        dy = distance_points[1] - self.turtle_position.y
+        theta = math.atan2(dy,dx)
+        angle = theta - self.turtle_position.theta
+        turn_angle = angle * 2
+        movement = TurtleVelocity(1.0, turn_angle)
+        rospy.logdebug(f"Publish movement: {theta, dx, dy, angle, self.turtle_position.x, self.turtle_position.y, self.turtle_position.theta, movement}")
+        self.pub.publish(movement)
+        #rospy.spin()
+        #rate = rospy.Rate(20) 
+        #rate.sleep()
+        return self.total_distance
+        
+    def final_move(self):
+        while True:
+            self.please_move()
+            threshold = math.dist([self.turtle_position.x, self.turtle_position.y], waypoints[self.iteration_number])
+            if threshold < self.dist_thresh:
+                self.iterations
 
 if __name__ == "__main__":
         rospy.init_node("follow")
         node = Follow()
         rospy.spin()
+        
 
 

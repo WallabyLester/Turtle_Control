@@ -28,8 +28,8 @@ class Draw:
             self.__teleport(i[0]-line_value,i[1]+line_value,0)
             self.__set_pen(off=0)
             self.__teleport(i[0]+line_value,i[1]-line_value,0)
-            self.__set_pen(off=1)
-            self.__teleport(0,0,0)
+            #self.__set_pen(off=1)
+            #self.__teleport(0,0,0)
             #self.__vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
         return EmptyResponse()
 
