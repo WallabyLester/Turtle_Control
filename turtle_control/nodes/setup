@@ -7,7 +7,7 @@ from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
 
 waypoints = rospy.get_param("/waypoints")
-line_value = 0.2
+line_value = 0.1
 
 class Draw:
     # service to reset turtlesim and draw waypoints

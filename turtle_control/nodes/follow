@@ -42,7 +42,7 @@ class Follow:
         self.__draw()
         self.__set_pen(off=1)
         self.__teleport(x_position, y_position, 0)
-        self.__set_pen(off=0)
+        self.__set_pen(r=255, g=255, b=255, off=0)
         distances = []
         a = (self.turtle_position.x, self.turtle_position.y)
         self.flag = 1
