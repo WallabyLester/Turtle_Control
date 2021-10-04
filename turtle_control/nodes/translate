@@ -1,24 +1,34 @@
 #!/usr/bin/env python
+"""
+Publishes twist that will move the turtle in the linear x and angular z.
 
-# This node converts TurtleVelocity messages to geometry_msgs/Twist messages published to cmd_vel
-# The data enables the turtle to be moved according to the subscribed topic 
+PUBLISHERS:
+    + /turtle1/cmd_vel (geometry_msgs/Twist) ~ the velocity of the turtle
 
+SUBSCRIBERS:
+    + /turtle_cmd (turtle_control/TurtleVelocity) ~ the movement instructions for the turtle
+
+"""
 import rospy
 from geometry_msgs.msg import Twist, Vector3
 from turtle_control.msg import TurtleVelocity
 
 
-''' this function takes in the subscribed information and publishes it to the cmd_vel topic in order to make the turtle move 
-    
-    Args: Twist data for the linear x and angular z '''
-    
 def turtle_handler(info):
+    """ Publish movement geometry_msgs/Twist commands translated from TurtleVelocity 
+    
+        Args: 
+            info.linear (float) : the forward velocity 
+            info.angular (float) : the angular velocity 
+
+        Returns:
+            Twist - linear/angular velocity
+    """
     rospy.logdebug(info)
     pub = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=10)
     pub.publish(Twist(Vector3(x = info.linear,y=0,z=0), Vector3(x=0,y=0,z = info.angular)))
     rospy.logdebug(f"Publish linear and angular velocity: {info.linear, info.angular}")
 
-# main function which subscribes to the TurtleVelocity topic and initializes the node
 if __name__=='__main__':
     rospy.Subscriber("turtle_cmd", TurtleVelocity, turtle_handler)
     rospy.init_node("translate", log_level=rospy.DEBUG)

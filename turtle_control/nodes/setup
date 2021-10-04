@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 
-'''What topics are published, their type, and what they do.
-What topics are subscribed to, their type, and what the data is used for.
-What services are offered, their type, and what they do
-What parameters are used, their type, and what they do.'''
-# This node contains the Draw class which uses various turtlesim services. The class offers the draw service which will move the turtle according to the waypoints
-# and draw x's on those waypoints. The reset, teleport absolute, and set pen services are used in order to complete these tasks. 
+"""
+Uses various services to move a turtle according to waypoints and draw x's on those waypoints.
+
+SERVICES:
+    + /draw (std_srvs/Empty) ~ custom service which calls function to move turtle and draws waypoints 
+    + /reset (std_srvs/Empty) ~ resets position of the turtle
+    + /turtle1/teleport_absolute (turtlesim/TeleportAbsolute) ~ teleports turtle to given position
+    + /turtle1/set_pen (turtlesim/SetPen) ~ sets turtle pen on or off
+
+PARAMETERS:
+    + /waypoints ~ list of points for the turtle to follow 
+"""
 
 import rospy
 from turtlesim.srv import TeleportAbsolute, SetPen
@@ -15,16 +21,9 @@ import numpy as np
 waypoints = rospy.get_param("/waypoints")
 line_value = 0.1
 
-'''A brief description of what the class or function does
-What the arguments are
-What the return value is
-What exceptions may be raised'''
-
 class Draw:
-    '''The Draw class takes in the waypoints from waypoints.yaml and moves the turtle with turtlesim services to draw x's on said waypoints.
-    
-        Services: Empty, TeleportAbsolute, SetPen
-        Args: x and y coordinates from waypoints'''
+    """ Uses waypoints from waypoints.yaml and moves the turtle with turtlesim services to draw x's on said waypoints.
+    """
     def __init__(self):
         self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
         self.__teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
@@ -32,6 +31,17 @@ class Draw:
         self.__service = rospy.Service("draw", Empty, self.actions)
 
     def actions(self,req):
+        """ Actions function for the /draw service 
+
+        Sets turtle pen on or off and teleports to new locations 
+
+        Args: 
+            /waypoints : the desired x, y positions for the turtle
+
+        Returns:
+            EmptyResponse : gives an empty value, only result is the lines drawn by turtle
+        
+        """
         self.__reset_turtle()
         for i in waypoints:
             self.__set_pen(off=1)
