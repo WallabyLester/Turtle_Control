@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+'''What topics are published, their type, and what they do.
+What topics are subscribed to, their type, and what the data is used for.
+What services are offered, their type, and what they do
+What parameters are used, their type, and what they do.'''
+
 import rospy
 from turtlesim.msg import Pose
 from std_srvs.srv import Empty
@@ -9,6 +14,11 @@ from turtle_control.msg import TurtleVelocity
 from turtle_control.srv import Start
 
 waypoints = rospy.get_param("/waypoints")
+
+'''A brief description of what the class or function does
+What the arguments are
+What the return value is
+What exceptions may be raised'''
 
 class Follow:
     # service to call the draw service from setup node and moves the turtle by waypoints

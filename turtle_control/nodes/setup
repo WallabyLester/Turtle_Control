@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+'''What topics are published, their type, and what they do.
+What topics are subscribed to, their type, and what the data is used for.
+What services are offered, their type, and what they do
+What parameters are used, their type, and what they do.'''
+
 import rospy
 #from geometry_msgs import Twist, Vector3
 from turtlesim.srv import TeleportAbsolute, SetPen
@@ -8,6 +13,11 @@ import numpy as np
 
 waypoints = rospy.get_param("/waypoints")
 line_value = 0.1
+
+'''A brief description of what the class or function does
+What the arguments are
+What the return value is
+What exceptions may be raised'''
 
 class Draw:
     # service to reset turtlesim and draw waypoints
