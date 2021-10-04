@@ -3,6 +3,8 @@
     <node name="setup" pkg="turtle_control" type="setup"/>
     <rosparam file="$(find turtle_control)/config/waypoint.yaml"/>
     <node name="translate" pkg="turtle_control" type="translate"/>
-    <node name="follow" pkg="turtle_control" type="follow"/>
+    <node name="follow" pkg="turtle_control" type="follow">
+        <param name="dist_thresh" value="0.05"/>
+    </node>
 
 </launch>

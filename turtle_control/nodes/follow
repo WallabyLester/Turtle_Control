@@ -1,10 +1,25 @@
 #!/usr/bin/env python
 
-'''What topics are published, their type, and what they do.
-What topics are subscribed to, their type, and what the data is used for.
-What services are offered, their type, and what they do
-What parameters are used, their type, and what they do.'''
+"""
+Publishes TurtleVelocity which will be used to move the turtle according to the waypoints
 
+PUBLISHERS:
+    + /turtle_cmd (turtle_control/TurtleVelocity) ~ the movement instructions for the turtle
+
+SUBSCRIBERS:
+    + /turtle1/pose (turtlesim/Pose) ~ turtle's current position
+
+SERVICES:
+    + /draw (std_srvs/Empty) ~ calls function to move turtle and draws waypoints 
+    + /reset (std_srvs/Empty) ~ resets position of the turtle
+    + /turtle1/teleport_absolute (turtlesim/TeleportAbsolute) ~ teleports turtle to given position
+    + /turtle1/set_pen (turtlesim/SetPen) ~ sets turtle pen on or off
+    + /restart (turtle_control/Start) ~ custom service which calls function to calculate turtle distance from waypoints
+
+PARAMETERS:
+    + /waypoints ~ list of points for the turtle to follow 
+
+"""
 import rospy
 from turtlesim.msg import Pose
 from std_srvs.srv import Empty
@@ -15,36 +30,48 @@ from turtle_control.srv import Start
 
 waypoints = rospy.get_param("/waypoints")
 
-'''A brief description of what the class or function does
-What the arguments are
-What the return value is
-What exceptions may be raised'''
-
 class Follow:
-    # service to call the draw service from setup node and moves the turtle by waypoints
+    """ Calls draw service from setup node and moves turtle to waypoints
+    """
     def __init__(self):
         self.__draw = rospy.ServiceProxy("draw", Empty)
         self.__teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
-        self.__spawn = rospy.ServiceProxy("/spawn", Spawn)
-        self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
         self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
         self.__service = rospy.Service("restart", Start,self.distance)
-        self.__dist_thresh = 0.05
-        rospy.set_param("~dist_thresh", self.__dist_thresh)
+        self.__dist_thresh = rospy.get_param("~dist_thresh")
         rospy.Subscriber("turtle1/pose", Pose, self.callback)
         self.pub = rospy.Publisher("turtle_cmd", TurtleVelocity, queue_size=10)
-        self.iteration_number = 0
-        self.flag = 0
+        self.iteration_number = 0  # sets initial iteration to first index 
+        self.flag = 0   # sets a flag to enable calling of the movement function 
 
     def callback(self, data):
-        #rospy.loginfo(f"x: {data.x}, y: {data.y}")
+        """ Callback function for the turtle1/pose service 
+
+        Gets the turtle's current position
+
+        Args: 
+            data (Pose) : gets turtle's x, y, and theta coordinates
+        
+        Returns: 
+            Turtle_position, containing the x, y, and theta coordinates
+        """
         self.turtle_position = data
         if self.flag == 1:
             self.please_move()
 
 
     def distance(self, position):
-        # function to check if turtle is within the bounds and compute distance
+        """ Distance function for the restart service 
+        
+        Checks turtle start position bounds and computes distance to the waypoints
+
+        Args:
+            position (Start) : receives user input x and y start position 
+
+        Returns:
+            Total_distance, the sum of the distances between the waypoints
+
+        """
         x_position = position.x
         y_position = position.y
         if x_position > 10 or x_position < 0 or y_position > 10 or y_position < 0:
@@ -61,22 +88,43 @@ class Follow:
             distance = math.dist(a, b)
             distances.append(distance)
             a = i
-            #print(distances)
         self.total_distance = sum(distances) 
         return self.total_distance
 
     def iterations(self):
+        """ Iterations function for the please_move function
+
+        Iterates through the given waypoints and restarts from the first once the last is reached
+
+        Args:
+            /waypoints : length of the waypoints list 
+        
+        Returns:
+            A iteration_number, the list index to be used 
+        """
         if self.iteration_number == len(waypoints)-1:
             self.iteration_number = 0
         else:
             self.iteration_number += 1
 
     def please_move(self):
-        # function to make the turtle move
+        """ Please_move function for the callback function
+
+        Calculates distance to next waypoint, theta value to turn towards the waypoint, and moves the turtle forward as long as not within
+        the dist_thresh value
+
+        Args: 
+            iteration_number : list index to use 
+            turtle_position : turtle's current x, y, theta position
+        
+        Returns:
+            TurtleVelocity, linear velocity 
+
+        """
         distance_points = waypoints[self.iteration_number]
         dx = distance_points[0] - self.turtle_position.x
         dy = distance_points[1] - self.turtle_position.y
-        theta = math.atan2(dy,dx)
+        theta = math.atan2(dy,dx)  # calculates goal theta to turn to
         theta_a = theta + 0.02
         theta_b = theta - 0.02
         if self.turtle_position.theta > theta_a:
@@ -88,7 +136,6 @@ class Follow:
             rospy.logdebug(f"Publish movement: {theta, dx, dy, self.turtle_position.x, self.turtle_position.y, self.turtle_position.theta, movement}")
             self.pub.publish(movement)
             threshold = math.dist([self.turtle_position.x, self.turtle_position.y], waypoints[self.iteration_number])
-            #print(threshold)
             if threshold < self.__dist_thresh:
                 self.iterations()
 

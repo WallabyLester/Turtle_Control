@@ -11,8 +11,8 @@ SERVICES:
 
 PARAMETERS:
     + /waypoints ~ list of points for the turtle to follow 
-"""
 
+"""
 import rospy
 from turtlesim.srv import TeleportAbsolute, SetPen
 from std_srvs.srv import Empty, EmptyResponse
@@ -22,7 +22,7 @@ waypoints = rospy.get_param("/waypoints")
 line_value = 0.1
 
 class Draw:
-    """ Uses waypoints from waypoints.yaml and moves the turtle with turtlesim services to draw x's on said waypoints.
+    """ Uses waypoints from waypoints.yaml and moves the turtle with turtlesim services to draw x's on said waypoints
     """
     def __init__(self):
         self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
