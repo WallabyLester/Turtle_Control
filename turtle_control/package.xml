@@ -2,7 +2,7 @@
 <package format="2">
   <name>turtle_control</name>
   <version>0.0.0</version>
-  <description>Code to make turtle draw waypoints</description>
+  <description>Code to make turtle draw waypoints and follow them</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
