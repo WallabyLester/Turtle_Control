@@ -10,6 +10,8 @@ def turtle_handler(info):
     rospy.logdebug(info)
     pub = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=10)
     pub.publish(Twist(Vector3(x = info.linear,y=0,z=0), Vector3(x=0,y=0,z = info.angular)))
+    rospy.logdebug(f"Publish linear and angular velocity: {info.linear, info.angular}")
+
 
 if __name__=='__main__':
     rospy.Subscriber("turtle_cmd", TurtleVelocity, turtle_handler)

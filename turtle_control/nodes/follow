@@ -19,8 +19,8 @@ class Follow:
         self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
         self.__set_pen = rospy.ServiceProxy("turtle1/set_pen", SetPen)
         self.__service = rospy.Service("restart", Start,self.distance)
-        self.dist_thresh = 0.05
-        rospy.set_param("~dist_thresh", self.dist_thresh)
+        self.__dist_thresh = 0.05
+        rospy.set_param("~dist_thresh", self.__dist_thresh)
         rospy.Subscriber("turtle1/pose", Pose, self.callback)
         self.pub = rospy.Publisher("turtle_cmd", TurtleVelocity, queue_size=10)
         self.iteration_number = 0
@@ -79,7 +79,7 @@ class Follow:
             self.pub.publish(movement)
             threshold = math.dist([self.turtle_position.x, self.turtle_position.y], waypoints[self.iteration_number])
             #print(threshold)
-            if threshold < self.dist_thresh:
+            if threshold < self.__dist_thresh:
                 self.iterations()
 
 if __name__ == "__main__":
