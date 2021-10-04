@@ -8,8 +8,10 @@ from geometry_msgs.msg import Twist, Vector3
 from turtle_control.msg import TurtleVelocity
 
 
-# this function takes in the subscribed information and publishes it to the cmd_vel topic in order to make the turtle move
-# publishes Twist data for the linear x and angular z 
+''' this function takes in the subscribed information and publishes it to the cmd_vel topic in order to make the turtle move 
+    
+    Args: Twist data for the linear x and angular z '''
+    
 def turtle_handler(info):
     rospy.logdebug(info)
     pub = rospy.Publisher("turtle1/cmd_vel", Twist, queue_size=10)

@@ -4,9 +4,10 @@
 What topics are subscribed to, their type, and what the data is used for.
 What services are offered, their type, and what they do
 What parameters are used, their type, and what they do.'''
+# This node contains the Draw class which uses various turtlesim services. The class offers the draw service which will move the turtle according to the waypoints
+# and draw x's on those waypoints. The reset, teleport absolute, and set pen services are used in order to complete these tasks. 
 
 import rospy
-#from geometry_msgs import Twist, Vector3
 from turtlesim.srv import TeleportAbsolute, SetPen
 from std_srvs.srv import Empty, EmptyResponse
 import numpy as np
@@ -20,7 +21,10 @@ What the return value is
 What exceptions may be raised'''
 
 class Draw:
-    # service to reset turtlesim and draw waypoints
+    '''The Draw class takes in the waypoints from waypoints.yaml and moves the turtle with turtlesim services to draw x's on said waypoints.
+    
+        Services: Empty, TeleportAbsolute, SetPen
+        Args: x and y coordinates from waypoints'''
     def __init__(self):
         self.__reset_turtle = rospy.ServiceProxy("reset", Empty)
         self.__teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
@@ -38,9 +42,6 @@ class Draw:
             self.__teleport(i[0]-line_value,i[1]+line_value,0)
             self.__set_pen(off=0)
             self.__teleport(i[0]+line_value,i[1]-line_value,0)
-            #self.__set_pen(off=1)
-            #self.__teleport(0,0,0)
-            #self.__vel_msg = Twist(Vector3(1,0,0), Vector3(0,0,0))
         return EmptyResponse()
 
 if __name__ == '__main__':
