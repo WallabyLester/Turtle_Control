@@ -1,4 +1,1 @@
-"""
-List of waypoints lists for the turtle to follow
-"""
 waypoints: [[2,2],[4,4],[3,6],[5,7],[4,8],[7,2],[7,6],[9,8]]
